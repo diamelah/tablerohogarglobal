@@ -45,3 +45,5 @@ if uploaded_file is not None:
         st.error(f"❌ Error al procesar el archivo: {e}")
 else:
     st.info("📂 Subí un archivo Excel (.xlsx) para comenzar.")
+
+# actualización de prueba para forzar commit
