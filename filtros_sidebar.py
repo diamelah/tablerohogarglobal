@@ -58,5 +58,3 @@ def aplicar_filtros(df):
                     df = df[df[campo].fillna("VACIO") == seleccion]
 
     return df
-
-#actus

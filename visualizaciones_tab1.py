@@ -143,7 +143,7 @@ def mostrar_tabla_general(df):
         
         st.divider()
     
-    # 🔹 Filtro TÁCTICO aplicado*-
+    # 🔹 Filtro TÁCTICO aplicado
     tactico_col = "TACTICO"
     grupo_col = "Grupo NPS"
 

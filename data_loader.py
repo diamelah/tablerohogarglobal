@@ -12,7 +12,7 @@ def cargar_datos(archivo_excel):
     df.to_csv(buffer, index=False)
     buffer.seek(0)
 
-    # Leer el CSV como si fuera una nueva carga, más liviana.-
+    # Leer el CSV como si fuera una nueva carga, más liviana
     df_csv = pd.read_csv(buffer)
 
     # Convertir fecha si existe

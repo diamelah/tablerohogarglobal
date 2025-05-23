@@ -76,7 +76,7 @@ def mostrar_tabla_verbatims(df):
     if columnas_existentes:
         st.dataframe(df[columnas_existentes])
 
-        # 👇 Exportar como Excel .xlsx*-
+        # 👇 Exportar como Excel .xlsx
         output = io.BytesIO()
         df[columnas_existentes].to_excel(output, index=False, sheet_name="Verbatims")
         output.seek(0)
