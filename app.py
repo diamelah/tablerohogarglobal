@@ -46,4 +46,4 @@ if uploaded_file is not None:
 else:
     st.info("📂 Subí un archivo Excel (.xlsx) para comenzar.")
 
-# actualización de prueba para forzar commit
+# actualización de prueba para forzar commit,2

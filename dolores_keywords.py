@@ -142,7 +142,7 @@ def normalizar_frase(frase):
     palabras = frase.lower().split()
     return " ".join(sorted(palabras))
 
-# --- Diccionario con frases normalizadas (para usar en el tagging) ---
+# --- Diccionario con frases normalizadas (para usar en el tagging) ----
 dolores_normalizados = {
     dolor: [normalizar_frase(token) for token in tokens]
     for dolor, tokens in dolores.items()

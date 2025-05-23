@@ -107,7 +107,7 @@ def mostrar_tabla_contacto(df):
         df_resumen = pd.concat(resumen, ignore_index=True)
         st.dataframe(df_resumen)
 
-        # 📥 Exportar como Excel
+        # 📥 Exportar como Excel*-
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             df_resumen.to_excel(writer, index=False, sheet_name="Resumen")

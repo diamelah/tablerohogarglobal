@@ -13,3 +13,5 @@ def detectar_dolor(verbatim):
             if frase in frase_normalizada:
                 return dolor
     return "Sin Dolor Detectado"
+
+#actualizaciones
