@@ -2,7 +2,7 @@ from dolor_detector import detectar_dolor
 import pandas as pd
 from utils import normalizar_texto
 import streamlit as st
-import io  # 👈 necesario para exportar
+import io  # 💈 necesario para exportar
 
 def mostrar_tabla_verbatims(df):
     st.subheader("📝 Tabla de Verbatims - 1er Causa Raíz")
@@ -41,12 +41,12 @@ def mostrar_tabla_verbatims(df):
 
     if filtro_dolor != "Todos":
         df = df[df["Dolor"] == filtro_dolor]
-        
+
     # 🕓 Mostrar solo la fecha sin hora
     if "Fecha de finalización (+00:00 GMT)" in df.columns:
         df["Fecha"] = pd.to_datetime(df["Fecha de finalización (+00:00 GMT)"], errors="coerce").dt.date
-        
-    # 🪪 Renombrar la columna de documento para visualización y exportación
+
+    # 🧪 Renombrar la columna de documento para visualización y exportación
         df = df.rename(columns={"PERSONA_DOCUMENTO_NUMERO": "DNI"})
 
     st.markdown("### 🧩 Seleccionar columnas adicionales (Q4 a Q8)")
@@ -64,7 +64,7 @@ def mostrar_tabla_verbatims(df):
         "Fecha",
         "DNI",
         "Grupo NPS",
-        "NPS",
+        "TACTICO",
         "Dolor",
         "Q2 - ¿Cuál es el motivo de tu calificación?",
         "Q3 - ¿Cuál fue el factor que más influyó en tu nota?"
@@ -108,3 +108,51 @@ def mostrar_tabla_verbatims(df):
         st.dataframe(pivot_dolor)
     else:
         st.warning("No se puede generar la tabla de Dolores por mes. Falta alguna columna.")
+
+# 🔻 FUNCION CORREGIDA: SOLO muestra Dolor "Indefinido", no "Sin Dolor Detectado"
+def mostrar_tabla_dolores_no_detectados(df):
+    st.markdown("### 📊 Tabla del Dolor 'Indefinido' por TACTICO y Grupo NPS")
+
+    if "Dolor" in df.columns and "TACTICO" in df.columns and "Grupo NPS" in df.columns:
+        df_indefinido = df[df["Dolor"] == "Indefinido"]
+        if df_indefinido.empty:
+            st.info("No se encontraron casos con Dolor 'Indefinido'.")
+        else:
+            tabla_indefinido = df_indefinido.groupby(["TACTICO", "Grupo NPS"]).size().unstack(fill_value=0)
+            st.dataframe(tabla_indefinido, use_container_width=True)
+
+            output_indef = io.BytesIO()
+            tabla_indefinido.to_excel(output_indef, index=True, sheet_name="Dolor_Indefinido")
+            output_indef.seek(0)
+
+            st.download_button(
+                label="⬇️ Descargar tabla 'Indefinido' como Excel",
+                data=output_indef,
+                file_name="dolor_indefinido_por_tactico.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+    else:
+        st.warning("No se puede generar la tabla de 'Indefinido'. Faltan columnas necesarias.")
+        
+    st.markdown("### 📊 Tabla del Dolor 'Sin Dolor Detectado' por TACTICO y Grupo NPS")
+
+    if "Dolor" in df.columns and "TACTICO" in df.columns and "Grupo NPS" in df.columns:
+        df_no_detectado = df[df["Dolor"] == "Sin Dolor Detectado"]
+        if df_no_detectado.empty:
+            st.info("No se encontraron casos con Dolor 'Sin Dolor Detectado'.")
+        else:
+            tabla_no_detectado = df_no_detectado.groupby(["TACTICO", "Grupo NPS"]).size().unstack(fill_value=0)
+            st.dataframe(tabla_no_detectado, use_container_width=True)
+
+            output_no_detectado = io.BytesIO()
+            tabla_no_detectado.to_excel(output_no_detectado, index=True, sheet_name="Sin_Dolor_Detectado")
+            output_no_detectado.seek(0)
+
+            st.download_button(
+                label="⬇️ Descargar tabla 'Sin Dolor Detectado' como Excel",
+                data=output_no_detectado,
+                file_name="dolor_no_detectado_por_tactico.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+    else:
+        st.warning("No se puede generar la tabla de 'Sin Dolor Detectado'. Faltan columnas necesarias.")
