@@ -60,7 +60,9 @@ dolores = {
         "falsa promesa",
         "nunca responden los reclamos",
         "me mintieron",
-        "no solucionan los errores que cometen"
+        "no solucionan los errores que cometen",
+        "poca claridad",
+        "la atención", "la atencion"
     ],
     "Atención": [
         "nadie atiende",
@@ -156,7 +158,12 @@ dolores = {
         "mal servicio por el precio",
         "está muy caro el servicio",
         "cada vez más caro y peor",
-        "cobran una fortuna"
+        "cobran una fortuna",
+        "no es tan bueno",
+        "sin internet",
+        "no funciona",
+        "se descompone",
+        "sin comunicación"
     ],
     "Baja del Servicio": [
         "gestione baja",
@@ -449,8 +456,11 @@ dolores = {
     ],
     "Atención Servicio Técnico": [
         "el técnico",
+        "los técnicos",
         "tecnica",
+        "servicio técnico", "servicio tecnico",
         "demora", "turno",
+        "problema técnico",
         "irresponsables",
         "poco calificado",
         "no se realizó ningún trabajo",
@@ -561,6 +571,10 @@ dolores = {
     "IVR": [
         "no atienden",
         "no me atienden",
+        "atiende siempre una máquina",
+        "atiende un contestador",
+        "atención no personalizada",
+        "contacto con la empresa",
         "no me atendieron",
         "nunca contesta una persona",
         "nunca me atienden",
@@ -645,7 +659,8 @@ dolores = {
         "chatbot no resuelve",
         "nadie atiende los teléfonos",
         "no puedo llegar a un operador",
-        "problema con ivr"
+        "problema con ivr",
+        "contestador", "contestadora", 
     ],
     "Tiempos de Atención": [
         "espera de 50 minutos",
@@ -658,6 +673,7 @@ dolores = {
         "esperar mucho",
         "tiempo no vale",
         "esperando por teléfono",
+        "imposible poder hablar"
     ],
     "Delivery": [
         "nunca me llegó",
@@ -707,7 +723,7 @@ dolores = {
         "promo", "promos", "promoción", "promociones",
         "beneficio", "beneficios", "bonificación", "bonificaciones",
         "descuento", "descuentos", "descontar",
-        "aumento mensual", "altos valores",
+        "aumento mensual", "altos valores", "ley de comunicación",
         "precios", "precio", "valor", "valores",
         "tarifa", "tarifas", "promociones", "promoción",
         "aumento", "aumentos", "aumentan", "aumenta", "incremento", "incrementos",
@@ -728,10 +744,15 @@ dolores = {
         "caducan rápidamente", "vencen las promociones",
         "No cumplen con lo contratado"
     ],
+    "Cliente, No Cliente": [
+        "no soy cliente",
+    ],
     "Funcionamiento del Servicio": [
         "se corta",
-        "se tilda"
+        "se tilda",
+        "pésima señal", "pesima señal",
         "se corta todo el tiempo",
+        "servicio regular",
         "se corta muy seguido",
         "funciona muy mal",
         "funcionando muy mal",
@@ -854,7 +875,8 @@ dolores = {
         "interrupción en youtube",
         "la velocidad no alcanza",
         "internet no llega a toda la casa",
-        "wifi no cubre toda la casa"
+        "wifi no cubre toda la casa",
+        "conexión no es"
     ],
     "Competencia": [
         "Telecentro",
@@ -871,10 +893,13 @@ dolores = {
     "Microcortes": [
         "micro corte", "MICRO CORTES",
         "se corta mucho",
+        "conexión yendo y viniendo",
         "continuos cortes",
+        "desconecciones", "desconexiones", "desconexión", "desconeccion",
         "se entre corta",
         "cortando", "cortandose",
         "cortar",
+        "no resolvio el problema",
         "microcortes",
         "interrupciones",
         "inestable",
@@ -936,6 +961,7 @@ dolores = {
         "instagram",
         "twitter",
         "canal de whatsapp",
+        "whatsapp"
     ],
     "Móvil": [
         "movil", "celular",
