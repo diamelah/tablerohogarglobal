@@ -100,46 +100,6 @@ def mostrar_tabla_general(df):
         else:
             st.info("No hay datos disponibles para mostrar la causa raíz.")
 
-        st.divider()
-        st.subheader("💡 % 2das Causas Raíz | Impacto Hogar Global (Q4 a Q8)")
-
-        if df.empty:
-            st.warning("⚠️ No hay datos disponibles para el análisis de causas secundarias con los filtros aplicados.")
-            return
-
-        campos_impacto = {
-            "Q4 - Elección por Servicio": "Q4- ¿Cuál de estas opciones influyó más en tu elección? SERVICIO",
-            "Q5 - Elección por Precio": "Q5-¿Cuál de estas opciones influyó más en tu elección? PRECIO",
-            "Q6 - Atención al Cliente": "Q6-¿Cuál de estas opciones influyó más en tu elección?-ATEN. CLIENTES",
-            "Q7 - Servicio Técnico": "Q7-¿Cuál de estas opciones influyó más en tu elección?-- SERV. TECN.",
-            "Q8 - Facturación y Pago": "Q8-¿Cuál de estas opciones influyó más en tu elección?-FACT. Y PAGO"
-        }
-
-        datos = []
-        total = len(df)
-
-        for nombre_legible, col in campos_impacto.items():
-            if col in df.columns:
-                valores_validos = df[col].dropna()
-                valores_validos = valores_validos[~valores_validos.astype(str).str.strip().isin(["", "-", "--", "---", ".", "…"])]
-                cantidad_con_respuesta = len(valores_validos)
-                cantidad_vacia = total - cantidad_con_respuesta
-
-                if total > 0:
-                    porcentaje_respuesta = round((cantidad_con_respuesta / total) * 100, 1)
-                    porcentaje_vacio = round((cantidad_vacia / total) * 100, 1)
-                else:
-                    porcentaje_respuesta = 0
-                    porcentaje_vacio = 0
-
-                datos.append({
-                    "Campo": nombre_legible,
-                    "% Con Respuesta": f"{porcentaje_respuesta}%",
-                    "% Vacíos": f"{porcentaje_vacio}%"
-                })
-
-        df_impacto = pd.DataFrame(datos)
-        st.dataframe(df_impacto)
         
         st.divider()
     

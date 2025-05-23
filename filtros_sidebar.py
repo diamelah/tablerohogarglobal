@@ -4,8 +4,8 @@ import pandas as pd
 def aplicar_filtros(df):
     st.sidebar.subheader("📅 Filtro por Fecha")
 
-    if 'Fecha de inicio (+00:00 GMT)' in df.columns:
-        df['fecha'] = pd.to_datetime(df['Fecha de inicio (+00:00 GMT)'], errors='coerce')
+    if 'Fecha de finalización (+00:00 GMT)' in df.columns:
+        df['fecha'] = pd.to_datetime(df['Fecha de finalización (+00:00 GMT)'], errors='coerce')
         df = df.dropna(subset=['fecha'])
         df['solo_fecha'] = df['fecha'].dt.date
 

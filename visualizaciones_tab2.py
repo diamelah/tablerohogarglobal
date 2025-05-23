@@ -49,17 +49,12 @@ def mostrar_tabla_verbatims(df):
     # 🧪 Renombrar la columna de documento para visualización y exportación
         df = df.rename(columns={"PERSONA_DOCUMENTO_NUMERO": "DNI"})
 
-    st.markdown("### 🧩 Seleccionar columnas adicionales (Q4 a Q8)")
-    columnas_extra = {
-        "Q4 - Servicio": "Q4- ¿Cuál de estas opciones influyó más en tu elección? SERVICIO",
-        "Q5 - Precio": "Q5-¿Cuál de estas opciones influyó más en tu elección? PRECIO",
-        "Q6 - Atención al Cliente": "Q6-¿Cuál de estas opciones influyó más en tu elección?-ATEN. CLIENTES",
-        "Q7 - Servicio Técnico": "Q7-¿Cuál de estas opciones influyó más en tu elección?-- SERV. TECN.",
-        "Q8 - Facturación y Pago": "Q8-¿Cuál de estas opciones influyó más en tu elección?-FACT. Y PAGO"
-    }
+    st.markdown("### 🧩 Seleccionar columnas adicionales")
 
-    columnas_seleccionadas = [col for label, col in columnas_extra.items() if st.checkbox(label, value=False, key=label)]
+    # Checkbox para incluir el resto de los campos del Excel
+    incluir_todos_los_campos = st.checkbox("📦 Incluir el resto de los campos/columnas del .xlsx", value=False)
 
+    # Columnas base que siempre deben estar
     columnas_base = [
         "Fecha",
         "DNI",
@@ -70,13 +65,18 @@ def mostrar_tabla_verbatims(df):
         "Q3 - ¿Cuál fue el factor que más influyó en tu nota?"
     ]
 
-    columnas = columnas_base + columnas_seleccionadas
+    if incluir_todos_los_campos:
+        columnas = columnas_base + [col for col in df.columns if col not in columnas_base]
+    else:
+        columnas = columnas_base
+
+    # Filtrar columnas que existen en el DataFrame
     columnas_existentes = [col for col in columnas if col in df.columns]
 
     if columnas_existentes:
         st.dataframe(df[columnas_existentes])
 
-        # 👇 Exportar como Excel .xlsx
+        # Exportar como Excel
         output = io.BytesIO()
         df[columnas_existentes].to_excel(output, index=False, sheet_name="Verbatims")
         output.seek(0)
@@ -92,9 +92,9 @@ def mostrar_tabla_verbatims(df):
 
     st.markdown("### 📅 Dolores por Mes")
 
-    if "Fecha de inicio (+00:00 GMT)" in df.columns and "Dolor" in df.columns:
+    if "Fecha de finalización (+00:00 GMT)" in df.columns and "Dolor" in df.columns:
         df_fechado = df.copy()
-        df_fechado["Mes"] = pd.to_datetime(df_fechado["Fecha de inicio (+00:00 GMT)"], errors="coerce").dt.to_period("M").astype(str)
+        df_fechado["Mes"] = pd.to_datetime(df_fechado["Fecha de finalización (+00:00 GMT)"], errors="coerce").dt.to_period("M").astype(str)
         df_fechado["Dolor"] = df_fechado["Dolor"].fillna("Sin Dolor")
 
         pivot_dolor = df_fechado.pivot_table(
@@ -109,50 +109,32 @@ def mostrar_tabla_verbatims(df):
     else:
         st.warning("No se puede generar la tabla de Dolores por mes. Falta alguna columna.")
 
-# 🔻 FUNCION CORREGIDA: SOLO muestra Dolor "Indefinido", no "Sin Dolor Detectado"
 def mostrar_tabla_dolores_no_detectados(df):
-    st.markdown("### 📊 Tabla del Dolor 'Indefinido' por TACTICO y Grupo NPS")
+    st.markdown("### 📊 Análisis por tipo de Dolor no detectado")
+
+    opciones = ["Indefinido", "Sin Dolor Detectado"]
+    opcion_seleccionada = st.radio("Seleccioná el tipo de caso a mostrar:", opciones)
 
     if "Dolor" in df.columns and "TACTICO" in df.columns and "Grupo NPS" in df.columns:
-        df_indefinido = df[df["Dolor"] == "Indefinido"]
-        if df_indefinido.empty:
-            st.info("No se encontraron casos con Dolor 'Indefinido'.")
+        df_filtrado = df[df["Dolor"] == opcion_seleccionada]
+        if df_filtrado.empty:
+            st.info(f"No se encontraron casos con Dolor '{opcion_seleccionada}'.")
         else:
-            tabla_indefinido = df_indefinido.groupby(["TACTICO", "Grupo NPS"]).size().unstack(fill_value=0)
-            st.dataframe(tabla_indefinido, use_container_width=True)
+            tabla = df_filtrado.groupby(["TACTICO", "Grupo NPS"]).size().unstack(fill_value=0)
+            st.dataframe(tabla, use_container_width=True)
 
-            output_indef = io.BytesIO()
-            tabla_indefinido.to_excel(output_indef, index=True, sheet_name="Dolor_Indefinido")
-            output_indef.seek(0)
+            output = io.BytesIO()
+            nombre_hoja = opcion_seleccionada.replace(" ", "_")
+            nombre_archivo = f"dolor_{nombre_hoja.lower()}_por_tactico.xlsx"
+            tabla.to_excel(output, index=True, sheet_name=nombre_hoja)
+            output.seek(0)
 
             st.download_button(
-                label="⬇️ Descargar tabla 'Indefinido' como Excel",
-                data=output_indef,
-                file_name="dolor_indefinido_por_tactico.xlsx",
+                label=f"⬇️ Descargar tabla '{opcion_seleccionada}' como Excel",
+                data=output,
+                file_name=nombre_archivo,
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
     else:
-        st.warning("No se puede generar la tabla de 'Indefinido'. Faltan columnas necesarias.")
-        
-    st.markdown("### 📊 Tabla del Dolor 'Sin Dolor Detectado' por TACTICO y Grupo NPS")
+        st.warning("No se puede generar la tabla. Faltan columnas necesarias.")
 
-    if "Dolor" in df.columns and "TACTICO" in df.columns and "Grupo NPS" in df.columns:
-        df_no_detectado = df[df["Dolor"] == "Sin Dolor Detectado"]
-        if df_no_detectado.empty:
-            st.info("No se encontraron casos con Dolor 'Sin Dolor Detectado'.")
-        else:
-            tabla_no_detectado = df_no_detectado.groupby(["TACTICO", "Grupo NPS"]).size().unstack(fill_value=0)
-            st.dataframe(tabla_no_detectado, use_container_width=True)
-
-            output_no_detectado = io.BytesIO()
-            tabla_no_detectado.to_excel(output_no_detectado, index=True, sheet_name="Sin_Dolor_Detectado")
-            output_no_detectado.seek(0)
-
-            st.download_button(
-                label="⬇️ Descargar tabla 'Sin Dolor Detectado' como Excel",
-                data=output_no_detectado,
-                file_name="dolor_no_detectado_por_tactico.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-    else:
-        st.warning("No se puede generar la tabla de 'Sin Dolor Detectado'. Faltan columnas necesarias.")

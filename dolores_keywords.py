@@ -96,6 +96,7 @@ dolores = {
         "no vino nadie",
         "nunca vinieron",
         "cambiar el equipo",
+        "cambio de modem",
         "fibra",
         "fibra optica",
         "me cambiaron a fibra y funciona peor",
@@ -122,7 +123,7 @@ dolores = {
     "Conveniencia": [
         "no hay relacion precio calidad",     
         "producto calidad",
-        "elevado y calidad mala",
+        "elevado y calidad mal",
         "relacion costo servicio",
         "servicio muy caro",
         "el mas caro del mercado",
@@ -478,6 +479,11 @@ dolores = {
         "tardaron",
         "instalacion precaria",
         "instalacion",
+        "no me lo instalan",
+        "no me pusieron",
+        "no pudieron instalarlo",
+        "no la instalaron",
+        "no pudieron terminar"
     ],
     "Cita Técnica": [
         "no vinieron",
@@ -517,14 +523,16 @@ dolores = {
         "turno no cumplido",
         "prometieron visita que no ocurrió",
         "incumplieron la visita técnica",
-        "nunca hicieron la instalación"
+        "nunca hicieron la instalación",
+        "prometen venir"
     ],
     "Mail": [
         "me llego un mail", "salesforce",
         "me enviaron un mail", 
         "recibi un mail",
         "correo electronico",
-        "los mail", "mails", "e-mail", "email"
+        "los mail", "mails", "e-mail", "email",
+        "mi correo"
     ],
     "Flow": [
         "flow",
@@ -746,6 +754,8 @@ dolores = {
     ],
     "Cliente, No Cliente": [
         "no soy cliente",
+        "no tengo personal",
+        "no tengo flow"
     ],
     "Funcionamiento del Servicio": [
         "se corta",
@@ -876,14 +886,16 @@ dolores = {
         "la velocidad no alcanza",
         "internet no llega a toda la casa",
         "wifi no cubre toda la casa",
-        "conexión no es"
+        "conexión no es",
+        "funciona con intermitencia",
     ],
     "Competencia": [
         "Telecentro",
         "Claro",
         "Movistar",
         "iplan",
-        "es la unica que hay"
+        "es la unica que hay",
+        "empresas", "empresa", "no es mejor que otras"
     ],
     "Adicionales Packs": [
         "packs",
@@ -918,8 +930,7 @@ dolores = {
         "router viejo",
         "modem viejos",
         "los aparatos",
-        "se descompagina",
-        "cambio de modem"
+        "se descompagina"
     ],
     "Outage": [
         "inconveniente en la zona",
@@ -942,7 +953,8 @@ dolores = {
         "respuesta insatisfactoria", "respuesta parcial", "respuesta tardía", "sin solución definitiva",
         "no recomendaría", "problema sin solución", "problemas que no se resuelven", "servicio estable pero no resuelven",
         "reclamo sin respuesta", "nunca me llamaron", "me siguen reclamando", "me cobraron igual", "no dan respuesta clara",
-        "no solucionan", "no te dan soluciones", "solución", "soluciones"
+        "no solucionan", "no te dan soluciones", "solución", "soluciones", "no dan respuesta", "reclamos", "no tiene soporte",
+        "no se resuelve"
     ],
     "Atención en la Venta": [
         "contratar",
