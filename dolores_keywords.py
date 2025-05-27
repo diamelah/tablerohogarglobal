@@ -64,13 +64,6 @@ dolores = {
         "poca claridad",
         "la atención", "la atencion"
     ],
-    "Atención": [
-        "nadie atiende",
-        "nadie me atiende",
-        "me ponene en espera",
-        "la atencion",
-        "falta de atencion"
-    ],
     "Encuesta": [
         "comentarios", "solicitudes",
         "derivar a mensajes",
@@ -578,6 +571,9 @@ dolores = {
     ],
     "IVR": [
         "no atienden",
+        "nadie me atiende",
+        "me ponene en espera",
+        "falta de atencion",
         "no me atienden",
         "atiende siempre una máquina",
         "atiende un contestador",
