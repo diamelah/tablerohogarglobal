@@ -38,7 +38,8 @@ if uploaded_file is not None:
             mostrar_tabla_general(df_filtrado)
         elif selected_tab == "🔧Análisis de Verbatims":
             mostrar_tabla_verbatims(df_filtrado)
-            mostrar_tabla_dolores_no_detectados(df_filtrado)  # ✅ AÑADIDO
+            mostrar_tabla_dolores_no_detectados(df_filtrado)
+            
         elif selected_tab == "📞 Análisis Dolor en el Contacto":
             mostrar_tabla_contacto(df_filtrado)
 

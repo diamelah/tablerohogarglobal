@@ -1,6 +1,7 @@
 dolores = {
     "Atención al cliente": [
         "maltrato",
+        "me trataron",
         "desatencion",
         "respuesta rapida",
         "rapida respuesta",
@@ -62,7 +63,19 @@ dolores = {
         "me mintieron",
         "no solucionan los errores que cometen",
         "poca claridad",
-        "la atención", "la atencion"
+        "la atención", "la atencion",
+    ],
+    "Alerta Match": [
+        "me trataron",        
+        "me trató mal",
+        "me maltrataron",
+        "me respondió mal",
+        "trato agresivo",
+        "trato inaceptable",
+        "me gritó",
+        "fue grosero",
+        "me faltó el respeto",        
+        "pedante", "soberbio"
     ],
     "Encuesta": [
         "comentarios", "solicitudes",
@@ -1000,7 +1013,7 @@ dolores = {
         "me lo cortaron sin aviso", "no hay servicio", "sin señal de internet",
         "no se reestableció", "me lo quitaron", "sin internet ni teléfono",
         "nos dejaron sin servicio", "jamás volvió el servicio", "no volvió el internet"
-],
+    ],
     "Telefonía Fija": [
         "sin teléfono", "telefono", "teléfono", "telefono fijo",
         "telefonía"

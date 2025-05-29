@@ -3,6 +3,7 @@ import pandas as pd
 from utils import normalizar_texto
 import streamlit as st
 import io  # 💈 necesario para exportar
+import xlsxwriter
 
 def mostrar_tabla_verbatims(df):
     st.subheader("📝 Tabla de Verbatims - 1er Causa Raíz")
@@ -77,18 +78,32 @@ def mostrar_tabla_verbatims(df):
         st.dataframe(df[columnas_existentes])
 
         # Exportar como Excel
-        output = io.BytesIO()
-        df[columnas_existentes].to_excel(output, index=False, sheet_name="Verbatims")
-        output.seek(0)
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df[columnas_existentes].to_excel(writer, sheet_name="Verbatims", startrow=3, index=False)
+        workbook = writer.book
+        worksheet = writer.sheets["Verbatims"]
 
-        st.download_button(
-            label="⬇️ Descargar tabla como Excel",
-            data=output,
-            file_name="verbatims_filtrados.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-    else:
-        st.warning("No se encontraron las columnas requeridas para mostrar la tabla de verbatims.")
+        # Agregar título en la parte superior
+        title_format = workbook.add_format({
+            'bold': True,
+            'font_size': 14,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        worksheet.merge_range(0, 0, 0, len(columnas_existentes) - 1, 'Análisis de Verbatims', title_format)
+
+        # Agregar autofiltros
+        worksheet.autofilter(3, 0, 3 + len(df), len(columnas_existentes) - 1)
+
+    output.seek(0)
+
+    st.download_button(
+        label="⬇️ Descargar tabla como Excel",
+        data=output,
+        file_name="analisis_verbatims.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
     st.markdown("### 📅 Dolores por Mes")
 
@@ -138,3 +153,9 @@ def mostrar_tabla_dolores_no_detectados(df):
     else:
         st.warning("No se puede generar la tabla. Faltan columnas necesarias.")
 
+
+
+
+
+
+    

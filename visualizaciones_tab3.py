@@ -96,7 +96,23 @@ def mostrar_tabla_contacto(df):
             st.dataframe(df_filtrado[columnas_existentes], use_container_width=True)
 
             output = io.BytesIO()
-            df_filtrado[columnas_existentes].to_excel(output, index=False, sheet_name="No_Porque")
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                df_filtrado[columnas_existentes].to_excel(writer, sheet_name="No_Porque", startrow=3, index=False)
+                workbook = writer.book
+                worksheet = writer.sheets["No_Porque"]
+
+                # Título
+                title_format = workbook.add_format({
+                    'bold': True,
+                    'font_size': 14,
+                    'align': 'center',
+                    'valign': 'vcenter'
+                })
+                worksheet.merge_range(0, 0, 0, len(columnas_existentes) - 1, "Análisis de Motivos - No, ¿por qué?", title_format)
+
+                # Autofiltro
+                worksheet.autofilter(3, 0, 3 + len(df_filtrado), len(columnas_existentes) - 1)
+
             output.seek(0)
 
             st.download_button(
@@ -105,6 +121,7 @@ def mostrar_tabla_contacto(df):
                 file_name="motivos_no_porque.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+
         else:
             st.info("✅ No hay comentarios asociados a respuestas 'No, ¿por qué?'.")
     else:
