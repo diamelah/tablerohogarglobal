@@ -100,9 +100,8 @@ def mostrar_tabla_general(df):
         else:
             st.info("No hay datos disponibles para mostrar la causa raíz.")
 
-        
         st.divider()
-    
+
     # 🔹 Filtro TÁCTICO aplicado
     tactico_col = "TACTICO"
     grupo_col = "Grupo NPS"
@@ -127,7 +126,6 @@ def mostrar_tabla_general(df):
         st.dataframe(pivot)
 
         try:
-            import plotly.express as px
             fig = px.bar(
                 agrupado,
                 x="mes",
@@ -156,25 +154,23 @@ def mostrar_tabla_general(df):
             df_nps = conteo_nps.reset_index()
             df_nps.columns = ["Grupo NPS", "Porcentaje"]
 
-            # ✅ Esto es lo que faltaba
-            import plotly.express as px
-
-            fig = px.bar(
-                df_nps,
-                x="Grupo NPS",
-                y="Porcentaje",
-                color="Grupo NPS",
-                text="Porcentaje",
-                color_discrete_map={
-                    "Promotor": "#8BC34A",
-                    "Pasivo": "#FFEB3B",
-                    "Detractor": "#F44336"
-                },
-                title=f"% de Grupo NPS para '{tactico_seleccionado}'",
-                height=500
-            )
-            fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
-            fig.update_layout(yaxis_title="Porcentaje", xaxis_title="Grupo NPS")
-            st.plotly_chart(fig, use_container_width=True)
-
-
+            try:
+                fig = px.bar(
+                    df_nps,
+                    x="Grupo NPS",
+                    y="Porcentaje",
+                    color="Grupo NPS",
+                    text="Porcentaje",
+                    color_discrete_map={
+                        "Promotor": "#8BC34A",
+                        "Pasivo": "#FFEB3B",
+                        "Detractor": "#F44336"
+                    },
+                    title=f"% de Grupo NPS para '{tactico_seleccionado}'",
+                    height=500
+                )
+                fig.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
+                fig.update_layout(yaxis_title="Porcentaje", xaxis_title="Grupo NPS")
+                st.plotly_chart(fig, use_container_width=True)
+            except ImportError:
+                st.warning("Plotly no está disponible para el gráfico interactivo.")

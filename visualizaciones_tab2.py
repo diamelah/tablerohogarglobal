@@ -2,7 +2,7 @@ from dolor_detector import detectar_dolor
 import pandas as pd
 from utils import normalizar_texto
 import streamlit as st
-import io  # 💈 necesario para exportar
+import io  # necesario para exportar
 import xlsxwriter
 
 def mostrar_tabla_verbatims(df):
@@ -13,11 +13,13 @@ def mostrar_tabla_verbatims(df):
         st.warning("⚠️ No hay datos disponibles con los filtros aplicados.")
         return
 
+    # Normalizar columnas Q2 y Q15 si aún no están normalizadas
     if "Q2_normalizado" not in df.columns and "Q2 - ¿Cuál es el motivo de tu calificación?" in df.columns:
-        df["Q2_normalizado"] = df["Q2 - ¿Cuál es el motivo de tu calificación?"].apply(normalizar_texto)
+        df["Q2_normalizado"] = df["Q2 - ¿Cuál es el motivo de tu calificación?"].astype(str).apply(normalizar_texto)
     if "Q15_normalizado" not in df.columns and "Q15_2_TEXT - No, ¿por qué?" in df.columns:
-        df["Q15_normalizado"] = df["Q15_2_TEXT - No, ¿por qué?"].apply(normalizar_texto)
+        df["Q15_normalizado"] = df["Q15_2_TEXT - No, ¿por qué?"].astype(str).apply(normalizar_texto)
 
+    # Si no existe “Dolor”, combinar ambos normalizados y aplicar detectar_dolor
     if "Dolor" not in df.columns:
         df["Texto_combinado"] = df["Q2_normalizado"].fillna("") + " " + df["Q15_normalizado"].fillna("")
         df["Dolor"] = df["Texto_combinado"].apply(detectar_dolor)
@@ -48,6 +50,7 @@ def mostrar_tabla_verbatims(df):
         df["Fecha"] = pd.to_datetime(df["Fecha de finalización (+00:00 GMT)"], errors="coerce").dt.date
 
     # 🧪 Renombrar la columna de documento para visualización y exportación
+    if "PERSONA_DOCUMENTO_NUMERO" in df.columns:
         df = df.rename(columns={"PERSONA_DOCUMENTO_NUMERO": "DNI"})
 
     st.markdown("### 🧩 Seleccionar columnas adicionales")
@@ -71,39 +74,39 @@ def mostrar_tabla_verbatims(df):
     else:
         columnas = columnas_base
 
-    # Filtrar columnas que existen en el DataFrame
+    # Filtrar columnas que realmente existen
     columnas_existentes = [col for col in columnas if col in df.columns]
 
     if columnas_existentes:
         st.dataframe(df[columnas_existentes])
 
         # Exportar como Excel
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        df[columnas_existentes].to_excel(writer, sheet_name="Verbatims", startrow=3, index=False)
-        workbook = writer.book
-        worksheet = writer.sheets["Verbatims"]
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df[columnas_existentes].to_excel(writer, sheet_name="Verbatims", startrow=3, index=False)
+            workbook = writer.book
+            worksheet = writer.sheets["Verbatims"]
 
-        # Agregar título en la parte superior
-        title_format = workbook.add_format({
-            'bold': True,
-            'font_size': 14,
-            'align': 'center',
-            'valign': 'vcenter'
-        })
-        worksheet.merge_range(0, 0, 0, len(columnas_existentes) - 1, 'Análisis de Verbatims', title_format)
+            # Agregar título en la parte superior
+            title_format = workbook.add_format({
+                'bold': True,
+                'font_size': 14,
+                'align': 'center',
+                'valign': 'vcenter'
+            })
+            worksheet.merge_range(0, 0, 0, len(columnas_existentes) - 1, 'Análisis de Verbatims', title_format)
 
-        # Agregar autofiltros
-        worksheet.autofilter(3, 0, 3 + len(df), len(columnas_existentes) - 1)
+            # Agregar autofiltros
+            worksheet.autofilter(3, 0, 3 + len(df), len(columnas_existentes) - 1)
 
-    output.seek(0)
+        output.seek(0)
 
-    st.download_button(
-        label="⬇️ Descargar tabla como Excel",
-        data=output,
-        file_name="analisis_verbatims.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+        st.download_button(
+            label="⬇️ Descargar tabla como Excel",
+            data=output,
+            file_name="analisis_verbatims.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
 
     st.markdown("### 📅 Dolores por Mes")
 
@@ -123,6 +126,7 @@ def mostrar_tabla_verbatims(df):
         st.dataframe(pivot_dolor)
     else:
         st.warning("No se puede generar la tabla de Dolores por mes. Falta alguna columna.")
+
 
 def mostrar_tabla_dolores_no_detectados(df):
     st.markdown("### 📊 Análisis por tipo de Dolor no detectado")
@@ -152,10 +156,3 @@ def mostrar_tabla_dolores_no_detectados(df):
             )
     else:
         st.warning("No se puede generar la tabla. Faltan columnas necesarias.")
-
-
-
-
-
-
-    

@@ -74,7 +74,7 @@ def mostrar_tabla_contacto(df):
         )
     else:
         st.info("No hay datos para mostrar en el resumen de respuestas.")
-        
+
     # ▶ Tabla con respuestas "No, ¿por qué?" y comentario asociado
     st.markdown("### 📋 Motivos cuando la respuesta fue 'No, ¿por qué?'")
 
@@ -126,5 +126,3 @@ def mostrar_tabla_contacto(df):
             st.info("✅ No hay comentarios asociados a respuestas 'No, ¿por qué?'.")
     else:
         st.warning("❗ Faltan columnas necesarias para mostrar los motivos 'No, ¿por qué?'.")
-
-

@@ -4,3 +4,4 @@ openpyxl>=3.1.0
 streamlit-echarts
 plotly
 XlsxWriter
+rapidfuzz>=2.0.0

@@ -4,6 +4,7 @@ import pandas as pd
 def aplicar_filtros(df):
     st.sidebar.subheader("📅 Filtro por Fecha")
 
+    # 1) Filtro por rango de Fecha (si existe la columna “Fecha de finalización (+00:00 GMT)”)
     if 'Fecha de finalización (+00:00 GMT)' in df.columns:
         df['fecha'] = pd.to_datetime(df['Fecha de finalización (+00:00 GMT)'], errors='coerce')
         df = df.dropna(subset=['fecha'])
@@ -17,6 +18,7 @@ def aplicar_filtros(df):
 
         df = df[(df['solo_fecha'] >= fecha_inicio) & (df['solo_fecha'] <= fecha_fin)]
 
+    # 2) Lista de campos para los que vamos a crear filtros
     campos_filtrables = [
         'Grupo_NPS',
         'Q.Encuestas',
@@ -39,6 +41,8 @@ def aplicar_filtros(df):
         'Dolor'
     ]
 
+    # 3) Para cada campo, genero un selectbox en el sidebar. Si el usuario elige algo distinto de “Todos”,
+    #    aplico el filtro y guardo la selección en session_state.
     for campo in campos_filtrables:
         if campo in df.columns:
             opciones_raw = df[campo].dropna()
@@ -50,11 +54,20 @@ def aplicar_filtros(df):
                 seleccion = st.sidebar.selectbox(f"{campo}", opciones, key=campo)
                 if seleccion != "Todos":
                     df = df[df[campo] == seleccion]
+                    if campo == "Grupo NPS":
+                        st.session_state["seleccion_grupo"] = seleccion
+                    else:
+                        st.session_state[f"filtro_{campo}"] = seleccion
+
             else:
                 opciones = sorted([str(op) for op in df[campo].fillna("VACIO").unique()])
                 opciones = ["Todos"] + opciones
                 seleccion = st.sidebar.selectbox(f"{campo}", opciones, key=campo)
                 if seleccion != "Todos":
                     df = df[df[campo].fillna("VACIO") == seleccion]
+                    if campo == "Grupo NPS":
+                        st.session_state["seleccion_grupo"] = seleccion
+                    else:
+                        st.session_state[f"filtro_{campo}"] = seleccion
 
     return df
