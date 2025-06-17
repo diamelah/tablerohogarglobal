@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from data_loader import cargar_datos
 from filtros_sidebar import aplicar_filtros
 from visualizaciones_tab1 import mostrar_tabla_general
@@ -6,6 +7,7 @@ from visualizaciones_tab2 import mostrar_tabla_verbatims, mostrar_tabla_dolores_
 from visualizaciones_tab3 import mostrar_tabla_contacto
 from dolor_detector import detectar_dolor
 from utils import normalizar_texto
+from dolores_keywords import dolores
 
 st.set_page_config(page_title="Dashboard NPS Global", layout="wide")
 st.title("📊 Dashboard NPS Global Hogar")
@@ -23,10 +25,13 @@ if uploaded_file is not None:
         # 1) Cargo el DataFrame completo
         df = cargar_datos(uploaded_file)
 
-        # 2) Si no existe la columna "Dolor", la creo a partir de Q2 usando detectar_dolor
         razón_col = "Q2 - ¿Cuál es el motivo de tu calificación?"
         if "Dolor" not in df.columns and razón_col in df.columns:
-            df["Dolor"] = df[razón_col].fillna("").astype(str).apply(detectar_dolor)
+            df[["Dolor", "_otros_dolores", "Doble Click"]] = df[razón_col].fillna("").astype(str).apply(
+                lambda x: pd.Series(detectar_dolor(x, dolores))
+            )
+            
+
 
         # 3) Aplico filtros (esto guarda st.session_state["seleccion_grupo"] dentro)
         df_filtrado = aplicar_filtros(df)

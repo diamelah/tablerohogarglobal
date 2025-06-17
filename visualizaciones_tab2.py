@@ -23,6 +23,12 @@ def mostrar_tabla_verbatims(df):
     if "Dolor" not in df.columns:
         df["Texto_combinado"] = df["Q2_normalizado"].fillna("") + " " + df["Q15_normalizado"].fillna("")
         df["Dolor"] = df["Texto_combinado"].apply(detectar_dolor)
+        
+    dolores_disponibles = sorted(df["Dolor"].dropna().unique())
+    filtro_dolor = st.selectbox("Filtrar por Dolor", ["Todos"] + dolores_disponibles)
+
+    if filtro_dolor != "Todos":
+        df = df[df["Dolor"] == filtro_dolor]
 
     st.subheader("🔍 Búsqueda personalizada")
 
@@ -39,11 +45,10 @@ def mostrar_tabla_verbatims(df):
             | df["Q15_2_TEXT - No, ¿por qué?"].astype(str).apply(contiene_palabras)
         ]
 
-    dolores_disponibles = sorted(df["Dolor"].dropna().unique())
-    filtro_dolor = st.selectbox("Filtrar por Dolor", ["Todos"] + dolores_disponibles)
+    # --- reemplazado: dolores_disponibles = ...
+    
+    df_expandido = df
 
-    if filtro_dolor != "Todos":
-        df = df[df["Dolor"] == filtro_dolor]
 
     # 🕓 Mostrar solo la fecha sin hora
     if "Fecha de finalización (+00:00 GMT)" in df.columns:
@@ -52,6 +57,7 @@ def mostrar_tabla_verbatims(df):
     # 🧪 Renombrar la columna de documento para visualización y exportación
     if "PERSONA_DOCUMENTO_NUMERO" in df.columns:
         df = df.rename(columns={"PERSONA_DOCUMENTO_NUMERO": "DNI"})
+        df_expandido = df_expandido.rename(columns={"PERSONA_DOCUMENTO_NUMERO": "DNI"})
 
     st.markdown("### 🧩 Seleccionar columnas adicionales")
 
@@ -65,6 +71,7 @@ def mostrar_tabla_verbatims(df):
         "Grupo NPS",
         "TACTICO",
         "Dolor",
+        "Doble Click",
         "Q2 - ¿Cuál es el motivo de tu calificación?",
         "Q3 - ¿Cuál fue el factor que más influyó en tu nota?"
     ]
@@ -78,7 +85,7 @@ def mostrar_tabla_verbatims(df):
     columnas_existentes = [col for col in columnas if col in df.columns]
 
     if columnas_existentes:
-        st.dataframe(df[columnas_existentes])
+        st.dataframe(df_expandido[columnas_existentes])
 
         # Exportar como Excel
         output = io.BytesIO()
@@ -97,7 +104,7 @@ def mostrar_tabla_verbatims(df):
             worksheet.merge_range(0, 0, 0, len(columnas_existentes) - 1, 'Análisis de Verbatims', title_format)
 
             # Agregar autofiltros
-            worksheet.autofilter(3, 0, 3 + len(df), len(columnas_existentes) - 1)
+            worksheet.autofilter(3, 0, 3 + len(df_expandido), len(columnas_existentes) - 1)
 
         output.seek(0)
 
@@ -115,13 +122,16 @@ def mostrar_tabla_verbatims(df):
         df_fechado["Mes"] = pd.to_datetime(df_fechado["Fecha de finalización (+00:00 GMT)"], errors="coerce").dt.to_period("M").astype(str)
         df_fechado["Dolor"] = df_fechado["Dolor"].fillna("Sin Dolor")
 
-        pivot_dolor = df_fechado.pivot_table(
-            index="Dolor",
+        pivot_dolor = (
+        df_fechado.pivot_table(
+            index=["Dolor", "Doble Click"],
             columns="Mes",
             values="Q2 - ¿Cuál es el motivo de tu calificación?",
             aggfunc="count",
             fill_value=0
-        ).sort_index()
+        )
+        .sort_values(by=df_fechado["Mes"].max(), ascending=False)
+    )
 
         st.dataframe(pivot_dolor)
     else:
